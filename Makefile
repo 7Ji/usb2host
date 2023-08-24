@@ -1,5 +1,6 @@
 BINARY = usb2host
 CFLAGS ?= -Wall -Wextra -O3
+STRIP ?= strip
 PREFIX ?= /usr
 NODE ?= fc000000.usb
 ENABLE_SERVICE ?=
@@ -7,6 +8,7 @@ HAS_RULES ?=
 
 ${BINARY}: ${BINARY}.c
 	${CC} -o $@ ${CFLAGS} $^
+	${STRIP} $@
 
 clean:
 	rm -f ${BINARY}
