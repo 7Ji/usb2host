@@ -113,12 +113,14 @@ int write_all_nodes(int const atfd) {
             r = -1;
             continue;
         }
+        int errno_backup = errno;
         int const fd = openat(atfd, path, O_WRONLY);
         if (fd < 0) {
             if (errno != ENOENT) {
                 pr_error_with_errno("Failed to open file '%s'", path);
                 r = -1;
             }
+            errno = errno_backup;
             continue;
         }
         if (write_host(fd)) {
@@ -129,6 +131,7 @@ int write_all_nodes(int const atfd) {
             pr_error_with_errno("Failed to close file '%s'", path);
             r = -1;
         }
+        errno = errno_backup;
     }
     if (errno) {
         pr_error_with_errno("Failed to readdir");
