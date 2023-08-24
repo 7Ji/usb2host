@@ -47,7 +47,7 @@ static inline int format_path(
     return 0;
 }
 
-int write_host(int const fd) {
+static inline int write_host(int const fd) {
     ssize_t written = write(fd, "host", 4);
     switch (written) {
     case 4:
@@ -61,7 +61,7 @@ int write_host(int const fd) {
     }
 }
 
-int write_node(int const atfd, char const node[]) {
+static inline int write_node(int const atfd, char const node[]) {
     char path[128];
     if (format_path(path, node)) return -1;
     int const fd = openat(atfd, path, O_WRONLY);
@@ -78,7 +78,7 @@ int write_node(int const atfd, char const node[]) {
 }
 
 // For performance, this does not call write_node()
-int write_all_nodes(int const atfd) {
+static inline int write_all_nodes(int const atfd) {
     int const dir_fd = dup(atfd);
     if (dir_fd < 0) {
         pr_error_with_errno("Failed to dup fd");
