@@ -3,6 +3,7 @@ CFLAGS ?= -Wall -Wextra -O3
 PREFIX ?= /usr
 NODE ?= fc000000.usb
 ENABLE_SERVICE ?=
+HAS_RULES ?=
 
 ${BINARY}: ${BINARY}.c
 	${CC} -o $@ ${CFLAGS} $^
@@ -11,9 +12,11 @@ clean:
 	rm -f ${BINARY}
 
 TARGET_BIN = ${PREFIX}/usr/bin/${BINARY}
-NAME_RULES = 83-typec2host.rules
+ifeq (${HAS_RULES}, 1)
+NAME_RULES = 83-usb2host.rules
 INC_RULES = ${NAME_RULES}.in
 TARGET_RULES = ${PREFIX}/usr/lib/udev/rules.d/${NAME_RULES}
+endif
 NAME_SERVICE = usb2host.service
 INC_SERVICE = ${NAME_SERVICE}.in
 TARGET_SERVICE_PARENT = ${PREFIX}/usr/lib/systemd/system
@@ -25,10 +28,12 @@ endif
 install: ${BINARY}
 	install -D --mode 755 ${BINARY} ${TARGET_BIN}
 
+ifeq (${HAS_RULES}, 1)
 	sed "s_%BINARY%_/usr/bin/${BINARY}_;\
 		 s_%NODE%_${NODE}_" \
 		 ${INC_RULES} | \
 	install -D --mode 644 /dev/stdin ${TARGET_RULES}
+endif
 
 	sed "s_%BINARY%_/usr/bin/${BINARY}_;\
 		 s_%NODE%_${NODE}_" \
