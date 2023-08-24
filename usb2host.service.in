@@ -1,0 +1,9 @@
+[Unit]
+Description=Init dual-role USB port to host mode
+
+[Service]
+Type=oneshot
+ExecStart=%BINARY% %NODE%
+
+[Install]
+WantedBy=multi-user.target
